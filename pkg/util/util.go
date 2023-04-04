@@ -9,7 +9,7 @@ import (
 	"golang.org/x/net/html"
 	"io"
 	"math"
-	"net/http"
+	//"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -74,20 +74,20 @@ func GetProofCode(accessToken string, realpath string) (ProofCode, error) {
 	return proofCode, nil
 }
 func GetFileContentType(out *os.File) string {
+	// buffer := make([]byte, 512)
+	// _, err := out.Seek(0, 0)
+	// if err != nil {
+	// 	return "plain/text"
+	// }
+	// _, err = out.Read(buffer)
 
-	buffer := make([]byte, 512)
-	_, err := out.Seek(0, 0)
-	if err != nil {
-		return "plain/text"
-	}
-	_, err = out.Read(buffer)
-
-	defer func() { out.Seek(0, 0) }()
-	if err != nil {
-		return "plain/text"
-	}
-	contentType := http.DetectContentType(buffer)
-	return contentType
+	// defer func() { out.Seek(0, 0) }()
+	// if err != nil {
+	// 	return "plain/text"
+	// }
+	// contentType := http.DetectContentType(buffer)
+	// return contentType
+	return "application/octet-stream"
 }
 
 func GetAllFiles(path string, matchPattern string) ([]string, error) {

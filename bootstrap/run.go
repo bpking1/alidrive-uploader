@@ -95,7 +95,7 @@ func Run() {
 	}
 
 	TreeFolders(drive, conf.Opt.Positional.RemotePath, dirs)
-
+	print("fake 6--------------------")
 	wg := sync.WaitGroup{}
 	p := mpb.New(mpb.WithWaitGroup(&wg), mpb.WithRefreshRate(300*time.Millisecond))
 
@@ -167,6 +167,7 @@ func readFileInfo(fp string) (util.FileStream, error) {
 	if err != nil {
 		return fs, err
 	}
+	print("readed file info: " + stat.Name())
 	return util.FileStream{
 		File:       nil,
 		Size:       uint64(stat.Size()),

@@ -119,11 +119,13 @@ func (drive *AliDrive) Upload(file util.FileStream) error {
 		"parent_file_id":  file.ParentPath,
 		"name":            file.Name,
 		"type":            "file",
-		"check_name_mode": "overwrite",
+		//"check_name_mode": "overwrite",  //改为 refuse,如果已存在同名文件就拒绝上传
+		"check_name_mode": "refuse",
 		"size":            file.Size,
 		"pre_hash":        preHash,
 	}
 	//preHash
+	println("妈的的卡在这了")
 	_, err := client.R().
 		SetBody(&createWithFoldersBody).
 		SetResult(&resp).
@@ -132,6 +134,7 @@ func (drive *AliDrive) Upload(file util.FileStream) error {
 	if err != nil {
 		return err
 	}
+	println("妈的的卡在这了,cao-------------------------------")
 	logrus.Debugf("[%s] %+v", file.Name, createWithFoldersBody)
 	logrus.Debugf("[%s] %+v", file.Name, resp)
 	logrus.Debugf("[%s] %+v", file.Name, e)
@@ -145,8 +148,8 @@ func (drive *AliDrive) Upload(file util.FileStream) error {
 		}
 		return fmt.Errorf("%s: %s", e.Code, e.Message)
 	}
-	//proof_code
-	if e.Code == "PreHashMatched" {
+	//proof_code   // 跳过检查秒传
+	if e.Code == "close this PreHashMatched" {
 		proofCode, err := util.GetProofCode(drive.Instance.AccessToken, file.ReadlPath)
 		if err != nil {
 			return err
@@ -178,6 +181,7 @@ func (drive *AliDrive) Upload(file util.FileStream) error {
 	}
 
 	if len(resp.PartInfoList) != int(total) {
+		conf.Output.Infof("[%s] %+v 文件已经存在,跳过上传--------------", file.Name, e)
 		return errors.New("上传地址为空，无法上传")
 	}
 	//正式上传
@@ -363,6 +367,7 @@ func (drive *AliDrive) CreateFolders(path string, rootPath string) (string, erro
 		}
 		logrus.Debugf("%+v", resp)
 		logrus.Debugf("%+v", e)
+		println("创建目录成功" + path)
 		if e.Code != "" {
 			return parentFileId, fmt.Errorf("%s: %s", e.Code, e.Message)
 		}
